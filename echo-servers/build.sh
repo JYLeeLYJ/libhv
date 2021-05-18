@@ -4,21 +4,7 @@ SCRIPT_DIR=$(cd `dirname $0`; pwd)
 ROOT_DIR=${SCRIPT_DIR}/..
 
 # install libevent libev libuv asio poco
-UNAME=$(uname -a)
-case ${UNAME} in
-    *Ubuntu*|*Debian*)
-        sudo apt install libevent-dev libev-dev libuv1-dev libboost-dev libboost-system-dev libasio-dev libpoco-dev
-        ;;
-    *CentOS*)
-        sudo yum install libevent-devel libev-devel libuv-devel boost-devel asio-devel poco-devel
-        ;;
-    *Darwin*)
-        brew install libevent libev libuv boost asio poco
-        ;;
-    *)
-        echo 'please install libevent libev libuv boost asio poco'
-        ;;
-esac
+# sudo apt install libevent-dev libev-dev libuv1-dev libboost-dev libboost-system-dev libasio-dev libpoco-dev
 
 # install muduo => https://github.com/chenshuo/muduo.git
 if false; then
@@ -29,7 +15,12 @@ mkdir build && cd build
 cmake .. && make && sudo make install
 fi
 
+if false ; then 
 cd ${ROOT_DIR}
-make libhv && sudo make install
+git clone https://github.com/haraldh/rust_echo_bench
+fi
+
+cd ${ROOT_DIR}
+# make libhv && sudo make install
 make echo-servers
-make webbench
+# make webbench

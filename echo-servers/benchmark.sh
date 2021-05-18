@@ -32,23 +32,23 @@ killall_echo_servers
 
 sport=$port
 
-if [ -x bin/libevent_echo ]; then
-    let port++
-    bin/libevent_echo $port &
-    echo "libevent running on port $port"
-fi
+# if [ -x bin/libevent_echo ]; then
+#     let port++
+#     bin/libevent_echo $port &
+#     echo "libevent running on port $port"
+# fi
 
-if [ -x bin/libev_echo ]; then
-    let port++
-    bin/libev_echo $port &
-    echo "libev running on port $port"
-fi
+# if [ -x bin/libev_echo ]; then
+#     let port++
+#     bin/libev_echo $port &
+#     echo "libev running on port $port"
+# fi
 
-if [ -x bin/libuv_echo ]; then
-    let port++
-    bin/libuv_echo $port &
-    echo "libuv running on port $port"
-fi
+# if [ -x bin/libuv_echo ]; then
+#     let port++
+#     bin/libuv_echo $port &
+#     echo "libuv running on port $port"
+# fi
 
 if [ -x bin/libhv_echo ]; then
     let port++
@@ -56,30 +56,50 @@ if [ -x bin/libhv_echo ]; then
     echo "libhv running on port $port"
 fi
 
-if [ -x bin/asio_echo ]; then
+# if [ -x bin/asio_echo ]; then
+#     let port++
+#     bin/asio_echo $port &
+#     echo "asio running on port $port"
+# fi
+
+# if [ -x bin/poco_echo ]; then
+#     let port++
+#     bin/poco_echo $port &
+#     echo "poco running on port $port"
+# fi
+
+# if [ -x bin/muduo_echo ]; then
+#     let port++
+#     taskset -c 4 bin/muduo_echo $port &
+#     echo "muduo running on port $port"
+# fi
+
+if [ -x bin/coio_echo ]; then
     let port++
-    bin/asio_echo $port &
-    echo "asio running on port $port"
+    taskset -c 0,1 bin/coio_echo $port > bin/server_log.txt 2>&1 &
+    echo "coio running on port $port"
 fi
 
-if [ -x bin/poco_echo ]; then
+if [ -x bin/co_asio_echo ]; then
     let port++
-    bin/poco_echo $port &
-    echo "poco running on port $port"
+    bin/co_asio_echo $port &
+    echo "asio(coroutine) running on port $port"
 fi
 
-if [ -x bin/muduo_echo ]; then
+if [ -x bin/cio_uring_echo ]; then
     let port++
-    bin/muduo_echo $port &
-    echo "muduo running on port $port"
+    bin/cio_uring_echo $port &
+    echo "cio_uring_echo running on port $port"
 fi
 
 sleep 1
+# cd ./rust_echo_bench
 
 for ((p=$sport+1; p<=$port; ++p)); do
     echo -e "\n==============$p====================================="
     # bin/webbench -q -c $client -t $time $host:$p
-    bin/pingpong_client -H $host -p $p
+    taskset -c 2,3 bin/pingpong_client -H $host -p $p -c 1000
+    # cargo run --release -- --address "localhost:$port" --number 150 --duration 10 --length 1024 
     sleep 1
 done
 
