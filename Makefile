@@ -159,7 +159,7 @@ evpp: prepare libhv
 webbench: prepare
 	$(CC) -o bin/webbench unittest/webbench.c
 
-echo-servers:
+echo-servers: prepare
 	$(CXX) -g -Wall -std=c++11 -o bin/pingpong_client echo-servers/pingpong_client.cpp -lhv -lpthread	-O3
 	$(CC)  -g -Wall -std=c99   -o bin/libevent_echo   echo-servers/libevent_echo.c     -levent		-O3
 	$(CC)  -g -Wall -std=c99   -o bin/libev_echo      echo-servers/libev_echo.c        -lev		-O3
@@ -170,6 +170,6 @@ echo-servers:
 	$(CXX) -g -Wall -std=c++11 -o bin/muduo_echo      echo-servers/muduo_echo.cpp      -lmuduo_net -lmuduo_base -lpthread -O3
 	clang++ -g -Wall -std=c++2a -o bin/co_asio_echo    echo-servers/co_asio_echo.cpp    -lboost_system -lpthread -O3 -fcoroutines-ts -stdlib=libc++
 	$(CC)  -g -Wall -O2 -D_GNU_SOURCE echo-servers/io_uring_echo_server.c -o bin/cio_uring_echo -l:liburing.a
-	$(CXX) -g -Wall -std=c++20 -o bin/coio_echo		  echo-servers/coio_echo.cpp 	-fcoroutines -lpthread -I../libcouring_io/include -O3 -l:liburing.a
+	$(CXX) -g -Wall -std=c++20 -o bin/coio_echo		  echo-servers/coio_echo.cpp 	-fcoroutines -lpthread -I../../include -O3 -l:liburing.a
  
 .PHONY: clean prepare install libhv examples unittest evpp echo-servers
